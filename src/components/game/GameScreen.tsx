@@ -93,40 +93,6 @@ function VotingBlock() {
   );
 }
 
-function FunActions() {
-  const { room, myPlayerId, funAction } = useGame();
-  const [target, setTarget] = useState('');
-  if (!room) return null;
-  const actions = [
-    'Закидать говном',
-    'Крикнуть: ты не пройдешь в бункер',
-    'Устроить абсурдный допрос',
-    'Сказать: у тебя рюкзак из секс-шопа',
-    'Потребовать раскрыть страх прямо сейчас',
-  ];
-
-  const run = async (text: string) => {
-    if (!target) return alert('Выберите игрока');
-    const res = await funAction(target, text);
-    if (res?.error) alert(res.error);
-  };
-
-  return (
-    <div className="glass" style={{ borderRadius: 12, padding: 12, marginTop: 12 }}>
-      <div style={{ marginBottom: 8, fontWeight: 700 }}>Доп. возможности (весело)</div>
-      <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: 8 }}>
-        <select className="input" style={{ padding: 8, fontSize: 12 }} value={target} onChange={(e) => setTarget(e.target.value)}>
-          <option value="">Выберите игрока</option>
-          {room.players.filter((p) => p.id !== myPlayerId).map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
-        </select>
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          {actions.map((a) => <button key={a} className="btn btn-primary" style={{ padding: '6px 10px', fontSize: 12 }} onClick={() => run(a)}>{a}</button>)}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function GameScreen() {
   const { room, myPlayerId, playerRevealCard, playerHideCard, endTurn } = useGame();
   if (!room) return null;
@@ -263,20 +229,6 @@ export default function GameScreen() {
       </div>
 
       <VotingBlock />
-      <FunActions />
-
-      {room.gameLog?.length > 0 && (
-        <div className="glass" style={{ borderRadius: 12, marginTop: 12, padding: 12 }}>
-          <div style={{ marginBottom: 8, fontWeight: 700 }}>События</div>
-          <div style={{ maxHeight: 160, overflowY: 'auto', display: 'grid', gap: 6 }}>
-            {[...room.gameLog].slice(-12).reverse().map((l, i) => (
-              <div key={i} style={{ fontSize: 12, color: '#aaa' }}>
-                {new Date(l.time).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })} — {l.message}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
